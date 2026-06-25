@@ -1,0 +1,68 @@
+experiment:
+  random_seed: 20260624
+  n_per_job_type: 1000  # sims per job type; 5 job types = 5000 total
+  use_api: false        # set to true to make real API calls
+
+anthropic:
+  model: claude-haiku-4-5
+  api_key_env_var: ANTHROPIC_API_KEY
+  max_retries: 4
+  timeout_seconds: 60
+  max_tokens: 512
+
+routes:
+  freeway_distance_miles: 14.0
+  coastal_distance_miles: 16.0
+  max_speed_mph: 80.0
+  min_speed_mph: 5.0
+  base_times_freeway:
+    "17:00": 31
+    "17:15": 31
+    "17:30": 31
+    "17:45": 29
+  base_times_coastal:
+    "17:00": 42
+    "17:15": 42
+    "17:30": 41
+    "17:45": 40
+
+jitter:
+  df: 3          # Student-t degrees of freedom
+  scale: 0.32    # scale of the logit-space noise
+
+randomization:
+  job_types:
+    - data_science
+    - finance
+    - marketing
+    - product_design
+    - software_engineering
+  release_times:
+    - "17:00"
+    - "17:15"
+    - "17:30"
+    - "17:45"
+  sunny_probability: 0.50
+
+estimation:
+  ridge_alpha: 0.01          # L2 penalty for ridge logit
+  cross_validate_ridge: false
+  include_interactions: true  # job x fatigue, job x weather, job x release_time
+
+flm:
+  n_folds: 5
+  hessian_inversion: ridge   # direct | ridge | spectral
+  ridge_lambda: 0.0001
+  spectral_floor: 0.000001
+
+event_study:
+  trim_b_threshold: 0.01   # exclude |b(X_i)| < threshold for D_i* computation
+
+output:
+  save_parquet: true
+  save_jsonl: true
+
+report:
+  author_name: Spencer Sween
+  author_title: Economist / Data Scientist
+  linkedin_tone: personal  # personal | professional

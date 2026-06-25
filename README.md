@@ -1,3 +1,7 @@
+*Hey everyone! I wanted to see if AI has a soul and, like me, will sometimes pick a scenic, coastal commute home or an ugly sludge of freeway traffic. Let's have some fun with Digital Twins for Intuit employees who live in Encinitas!*
+
+---
+
 # Digital Twins Commute-Choice Experiment
 
 A fully reproducible Python pipeline that simulates Wednesday evening commuters choosing between a freeway and a coastal route home from the Intuit campus in Torrey Highlands, San Diego to Encinitas, CA. Each "commuter" is a Claude LLM agent — a digital twin — given a randomized persona and asked to make a realistic route-choice decision.

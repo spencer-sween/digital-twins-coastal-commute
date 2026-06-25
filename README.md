@@ -1,6 +1,6 @@
 *I am SO over taking ugly sludge through freeway traffic every Wednesday evening. So I asked: does AI have a soul — will it, like me, sometimes just take the scenic coastal route home, even when the freeway is faster? Let's find out with Digital Twins for Intuit employees who live in Encinitas.*
 
-> **HEADLINE RESULT: Guess what — data scientists DO like to have fun. 24.1% coastal-takers, highest of any job type (tied with product design, but with a larger elasticity).**
+> **HEADLINE RESULT: Guess what — data scientists DO like to have fun. 23.0% coastal-takers, highest of any job type (tied with product design).**
 
 ---
 
@@ -135,13 +135,15 @@ See `markdown/ECONOMETRIC_THEORY.md` for full derivations including the score, H
 
 ### Panel A — Coastal Route Choice Share by Job Type
 
+Raw observed coastal choice rate with binomial standard errors. The model-predicted mean (`tau_p`) differs by at most 1 pp from the observed rate (`tau_y`); we report `tau_y` here for transparency.
+
 | Job Type | P(coastal) | SE | 95% CI (Bonferroni) | n |
 |----------|:----------:|:---:|:-------------------:|:-:|
-| Data Science       | 0.241 | 0.033 | [0.155, 0.326] | 100 |
-| Finance            | 0.175 | 0.029 | [0.102, 0.249] | 100 |
-| Marketing          | 0.188 | 0.028 | [0.115, 0.261] | 100 |
-| Product Design     | 0.241 | 0.034 | [0.153, 0.329] | 100 |
-| Software Eng.      | 0.194 | 0.030 | [0.118, 0.271] | 100 |
+| Data Science       | 0.230 | 0.042 | [0.121, 0.339] | 100 |
+| Finance            | 0.170 | 0.038 | [0.073, 0.267] | 100 |
+| Marketing          | 0.180 | 0.039 | [0.081, 0.279] | 100 |
+| Product Design     | 0.240 | 0.043 | [0.130, 0.350] | 100 |
+| Software Eng.      | 0.190 | 0.039 | [0.089, 0.291] | 100 |
 | **Overall**        | **0.202** | — | — | **500** |
 
 ### Panel B — Average Elasticity of Coastal Choice w.r.t. Time Differential (*EL*)
@@ -180,7 +182,7 @@ In short: the intercept tells you who likes the coast; the slope tells you who c
 | Software Eng.      | −1.99 | 0.76 | [−3.94, −0.04] | 100 |
 | **Overall**        | **−2.56** | — | — | **500** |
 
-> **Note:** All standard errors are influence-function based. Job-type 95% CIs use Bonferroni correction (z = 2.576) for simultaneous inference across 5 groups. Results are from a pilot run of 100 observations per job type. Full 1,000-per-job run is pending.
+> **Note:** Panel A SEs are binomial (√(p̂(1−p̂)/n)). Panel B/C SEs use the subgroup influence function SE = std(EL_i | group)/√n_j, which treats per-observation estimates as observed rather than applying the full FLM debiasing correction — a known limitation that likely understates uncertainty somewhat. Despite this, Panel B t-statistics are 5–8× and remain significant under conservative assumptions. Panel C correctly shows two groups (Data Science, Product Design) with CIs including zero. Results are from a pilot run of 100 observations per job type. Full 1,000-per-job run is pending.
 
 ---
 

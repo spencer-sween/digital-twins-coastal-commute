@@ -31,7 +31,7 @@ Base travel times $\bar{t}^f(R_i)$ and $\bar{t}^c(R_i)$ are projected route-spec
 
 Specifically, for route $r \in \{f, c\}$ with distance $d^r$ miles, let $\bar{t}^r_i = \bar{t}^r(R_i)$ denote the base time. Define the logit of a speed fraction:
 
-$$\tilde{u}^r_i = \text{logit}\!\left(\frac{\bar{t}^r_i - \underline{t}^r}{\bar{t}^r - \underline{t}^r}\right) + \varepsilon^r_i, \qquad \varepsilon^r_i \sim t_3(0,\ 0.32^2)$$
+$$\tilde{u}^r_i = \text{logit}\left(\frac{\bar{t}^r_i - \underline{t}^r}{\bar{t}^r - \underline{t}^r}\right) + \varepsilon^r_i, \qquad \varepsilon^r_i \sim t_3(0,\ 0.32^2)$$
 
 where $\underline{t}^r = 60 d^r / 80$ (physical lower bound at 80 mph) and $\bar{t}^r = 60 d^r / 5$ (physical upper bound at 5 mph), and $t_3$ denotes the Student-$t$ distribution with 3 degrees of freedom. The realized time is then
 
@@ -61,7 +61,7 @@ $$Y_i = \mathbf{1}[\text{agent } i \text{ chooses coastal route}]$$
 
 We model the conditional probability of choosing the coastal route as:
 
-$$P(Y_i = 1 \mid X_i, D_i) = \Lambda\!\left(a(X_i) + b(X_i)\cdot D_i\right)$$
+$$P(Y_i = 1 \mid X_i, D_i) = \Lambda\left(a(X_i) + b(X_i)\cdot D_i\right)$$
 
 where $\Lambda(v) = (1+e^{-v})^{-1}$. The flexible intercept $a(X_i)$ captures the baseline preference for the coastal route at zero time differential, and the flexible slope $b(X_i)$ captures time sensitivity — the rate at which increasing $D_i$ (making coastal slower) reduces the probability of choosing coastal. We expect $b(X_i) < 0$.
 
@@ -169,7 +169,7 @@ Estimated by the raw sample mean. Used as a calibration check: $\hat\tau_p \appr
 **4. Intercept distribution** $a(X_i;\, \hat\theta_a)$: The cross-sectional distribution of baseline coastal preference at $D_i = 0$.
 
 **5. Average marginal effect (AME)**:
-$$\text{AME} = E\!\left[\frac{\partial p_i}{\partial D_i}\right] = E\!\left[p_i(1-p_i)\,b(X_i)\right]$$
+$$\text{AME} = E\left[\frac{\partial p_i}{\partial D_i}\right] = E\left[p_i(1-p_i)\,b(X_i)\right]$$
 The AME is the average change in coastal-choice probability per additional minute of coastal travel time premium. Debiasing uses $g(Z_i, \theta) = \hat p_i(1-\hat p_i)\hat b_i$ with the corresponding $\hat G$.
 
 **6. Semi-elasticity** $\text{SE}_i = (1-p_i)b(X_i)$: The log-odds derivative $\partial \log(p_i/(1-p_i))/\partial D_i$ is $b(X_i)$, and $\text{SE}_i$ gives the percentage-point-per-minute effect on the probability scale at zero base rate.

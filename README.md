@@ -1,4 +1,6 @@
-*Hey everyone! I wanted to see if AI has a soul and, like me, will sometimes pick a scenic, coastal commute home or an ugly sludge of freeway traffic. Let's have some fun with Digital Twins for Intuit employees who live in Encinitas!*
+*I am SO over taking ugly sludge through freeway traffic every Wednesday evening. So I asked: does AI have a soul — will it, like me, sometimes just take the scenic coastal route home, even when the freeway is faster? Let's find out with Digital Twins for Intuit employees who live in Encinitas.*
+
+> **HEADLINE RESULT: Guess what — data scientists DO like to have fun. 24.1% coastal-takers, highest of any job type (tied with product design, but with a larger elasticity).**
 
 ---
 
@@ -107,15 +109,25 @@ The model is instructed via system prompt to return only valid JSON matching a s
 
 ## The Model
 
-The econometric object is the route-choice response to the **coastal-minus-freeway time differential**:
+**Random utility setup.** Agent $i$ computes latent utility differences between routes. Let $U_i^c$ and $U_i^f$ be the utilities of choosing coastal vs. freeway. Under a random utility model (McFadden 1974):
+
+$$U_i^c - U_i^f = a(X_i) + b(X_i) \cdot D_i + \varepsilon_i$$
+
+where $\varepsilon_i$ is a logistic error (i.i.d. across agents). The agent chooses coastal iff $U_i^c > U_i^f$. Integrating out $\varepsilon_i$ gives the logit probability:
+
+$$P(Y_i = 1 \mid X_i, D_i) = \Lambda\left(a(X_i) + b(X_i) \cdot D_i\right), \qquad \Lambda(v) = \frac{1}{1+e^{-v}}$$
+
+**Treatment variable.** The treatment is the coastal-minus-freeway time differential in minutes (not logged):
 
 $$D_i = t_i^{\text{coastal}} - t_i^{\text{freeway}}$$
 
-$$P(Y_i = 1 \mid X_i, D_i) = \Lambda\!\left(a(X_i) + b(X_i) \cdot D_i\right)$$
+$D_i > 0$ means coastal is slower. Because $D_i$ is drawn from a bounded jitter distribution independently of $X_i$, it is mean-independent of agent characteristics by design.
 
-where $\Lambda$ is the logistic CDF, $a(X_i)$ is a flexible intercept, and $b(X_i) < 0$ is the time-sensitivity slope. Both vary by job type, fatigue, weather, release time, and their pairwise interactions. Standard errors use FLM-style influence functions with K=5 cross-fitting. Job-type CIs are Bonferroni-corrected (z = 2.576, α = 0.05 across 5 groups).
+**Flexible specification.** Both the intercept $a(X_i)$ and the slope $b(X_i)$ are approximated by linear basis expansions over job type, release time, fatigue state, weather, and their pairwise interactions. This lets the time sensitivity differ by job type and fatigue rather than forcing a single slope. We expect $b(X_i) < 0$ everywhere.
 
-See `markdown/ECONOMETRIC_THEORY.md` for full derivations.
+**Estimation and inference.** $\theta$ is estimated by maximum likelihood (ridge-regularized logit). Target parameters — average marginal effects, elasticities, willingness-to-take thresholds — are debiased via FLM-style influence functions with K=5 cross-fitting. Job-type confidence intervals use Bonferroni correction (z = 2.576, α = 0.05 across 5 groups).
+
+See `markdown/ECONOMETRIC_THEORY.md` for full derivations including the score, Hessian, and cross-fitting protocol.
 
 ---
 
@@ -134,7 +146,9 @@ See `markdown/ECONOMETRIC_THEORY.md` for full derivations.
 
 ### Panel B — Average Elasticity of Coastal Choice w.r.t. Time Differential (*EL*)
 
-Elasticity *EL_i = D_i (1 − p_i) b(X_i)* measures the percentage-point change in P(coastal) per 1% increase in the time differential. A value of −5.7 means that a 10% larger time premium for the coastal route reduces coastal choice probability by about 57 percentage points on the margin.
+Elasticity *EL_i = D_i (1 − p_i) b(X_i)* is the point elasticity of P(coastal) with respect to the time differential: a 1% increase in D_i multiplies P(coastal) by approximately (1 + EL_i/100). Concretely, EL = −5.7 means a 10% larger time premium reduces P(coastal) by about 57% relative to its baseline — e.g., from 0.20 to 0.086.
+
+Note: D_i enters the model **in levels** (minutes), not logged. EL_i is a derived quantity from the level-level logit — it is the standard arc elasticity (∂p/∂D)·(D/p) evaluated at each observation, not a regression coefficient from a log-log model.
 
 | Job Type | Avg *EL* | SE | 95% CI (Bonferroni) | n |
 |----------|:--------:|:---:|:-------------------:|:-:|
@@ -144,6 +158,14 @@ Elasticity *EL_i = D_i (1 − p_i) b(X_i)* measures the percentage-point change 
 | Product Design     | −5.694 | 0.820 | [−7.806, −3.581] | 100 |
 | Software Eng.      | −5.300 | 0.840 | [−7.465, −3.134] | 100 |
 | **Overall**        | **−5.697** | 0.002 | — | **500** |
+
+**Why do data scientists have both the highest coastal take rate AND the largest elasticity magnitude?** These are driven by separate parameters:
+
+- **Higher take rate** (24.1%): Data scientists have the least-negative intercept $a_i = -0.36$ — the strongest unconditional preference for the coastal route. This is a structural feature of the LLM's representation of data scientists (maybe they value the decompression?).
+
+- **Largest |EL|**: Despite this, their slope $b_i = -0.389$ is actually the *least* negative of all job types — they are structurally the *least* time-sensitive. The large elasticity comes from having the largest mean D_i in this pilot (14.0 min vs. ~9–13 for other groups), which is a random-sample artifact: EL_i = D_i·(1−p_i)·b_i scales with D_i, and with only 100 obs per group the realized mean D can vary substantially. In a larger run this ordering would likely change.
+
+In short: the intercept tells you who likes the coast; the slope tells you who cares about time; the elasticity conflates both with realized sample D — so read the three panels together.
 
 ### Panel C — Average Willingness-to-Take Threshold (*D\**)
 

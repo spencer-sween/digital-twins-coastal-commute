@@ -1,5 +1,4 @@
 .env
-outputs/
 __pycache__/
 *.pyc
 *.pyo
@@ -11,3 +10,8 @@ build/
 .pytest_cache/
 .coverage
 htmlcov/
+
+# Keep outputs except large raw files
+outputs/data/prompts.jsonl
+outputs/data/api_raw_responses.jsonl
+outputs/logs/

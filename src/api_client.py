@@ -44,6 +44,10 @@ def call_claude(
                 timeout=timeout,
             )
             raw_text = response.content[0].text.strip()
+            # Strip markdown code fences if the model added them
+            if raw_text.startswith("```"):
+                raw_text = raw_text.split("\n", 1)[-1]  # drop opening fence line
+                raw_text = raw_text.rsplit("```", 1)[0].strip()  # drop closing fence
             data = json.loads(raw_text)
             jsonschema.validate(data, OUTPUT_SCHEMA)
             return {"status": "ok", "data": data, "error": None}

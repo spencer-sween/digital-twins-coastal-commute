@@ -18,7 +18,7 @@ def run_experiment(design: pd.DataFrame, cfg: dict, verbose: bool = True) -> pd.
     results = []
     errors = 0
     for i, row in design.iterrows():
-        if verbose and (i % 100 == 0 or i < 5):
+        if verbose and (True):
             print(f"  [{i+1}/{n}] obs_id={row['obs_id']} job={row['job_type']}", end="")
 
         prompt_text = render_prompt(row.to_dict())
@@ -61,7 +61,7 @@ def run_experiment(design: pd.DataFrame, cfg: dict, verbose: bool = True) -> pd.
                 "random_seed": seed,
             }
 
-        if verbose and (i % 100 == 0 or i < 5):
+        if verbose and (True):
             status = record["chosen_route"] or "ERROR"
             print(f" → {status}")
 
